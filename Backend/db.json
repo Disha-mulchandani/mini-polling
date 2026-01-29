@@ -1,24 +1,42 @@
 {
   "polls": [
     {
-      "id": "1",
+      "id": 1,
       "question": "Your first poll?",
       "isActive": true,
       "createdAt": "2026-01-29T00:00:00Z"
+    },
+    {
+      "id": 2,
+      "question": "Which language do you prefer?",
+      "isActive": true,
+      "createdAt": "2026-01-29T11:19:32.704Z"
     }
   ],
   "options": [
     {
-      "id": "1",
+      "id": 1,
       "pollId": 1,
       "text": "Option A",
-      "votes": 6
+      "votes": 15
     },
     {
-      "id": "2",
+      "id": 2,
       "pollId": 1,
       "text": "Option B",
       "votes": 1
+    },
+    {
+      "id": 3,
+      "pollId": 2,
+      "text": "English",
+      "votes": 4
+    },
+    {
+      "id": 4,
+      "pollId": 2,
+      "text": "Hindi",
+      "votes": 0
     }
   ]
 }

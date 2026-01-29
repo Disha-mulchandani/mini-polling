@@ -1,18 +1,12 @@
 const express = require("express");
 const cors = require("cors");
-const app = express();
+const pollRoutes = require("./routes/pollRoutes");
 
+const app = express();
 app.use(cors());
 app.use(express.json());
 
-const pollRoutes = require("./routes/pollRoutes");
-app.use("/api/polls", pollRoutes); // ✅ This mounts pollRoutes on /api/polls
+app.use("/api/polls", pollRoutes);
 
-// Optional: test root
-app.get("/", (req, res) => {
-  res.send("Backend is running!");
-});
-
-app.listen(5000, () => {
-  console.log("Backend running on http://localhost:5000");
-});
+const PORT = 5000;
+app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`));

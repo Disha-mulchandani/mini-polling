@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Container, Typography, TextField, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Container, Typography, TextField, Button, Box } from "@mui/material";
 
 const CreatePoll = () => {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleOptionChange = (index, value) => {
     const newOptions = [...options];
@@ -14,52 +13,38 @@ const CreatePoll = () => {
   };
 
   const addOption = () => setOptions([...options, ""]);
+  const removeOption = (index) => options.length > 2 && setOptions(options.filter((_, i) => i !== index));
 
   const handleSubmit = async () => {
-    const filteredOptions = options.filter(o => o.trim() !== "");
-    if (!question || filteredOptions.length < 2) {
-      alert("Add a question and at least 2 options");
-      return;
-    }
+    if (!question.trim() || options.some(opt => !opt.trim())) return alert("Fill question and all options");
 
+    setLoading(true);
     try {
-      await fetch("http://localhost:5000/api/polls/create", {
+      const res = await fetch("http://localhost:5000/api/polls/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question, options: filteredOptions })
+        body: JSON.stringify({ question, options })
       });
-      alert("Poll created successfully!");
-      navigate("/");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to create poll");
-    }
+      const data = await res.json();
+      alert(data.message || "Poll created successfully");
+      setQuestion(""); setOptions(["",""]);
+    } catch {
+      alert("Failed to create poll. Check backend.");
+    } finally { setLoading(false); }
   };
 
   return (
     <Container sx={{ mt: 5 }}>
-      <Typography variant="h4">Create Poll</Typography>
-      <TextField
-        label="Poll Question"
-        fullWidth
-        sx={{ mt: 2 }}
-        value={question}
-        onChange={e => setQuestion(e.target.value)}
-      />
+      <Typography variant="h4" gutterBottom>Create Poll</Typography>
+      <TextField fullWidth label="Question" value={question} onChange={e => setQuestion(e.target.value)} sx={{ mb: 2 }} />
       {options.map((opt, i) => (
-        <TextField
-          key={i}
-          label={`Option ${i + 1}`}
-          fullWidth
-          sx={{ mt: 1 }}
-          value={opt}
-          onChange={e => handleOptionChange(i, e.target.value)}
-        />
+        <Box key={i} sx={{ display: "flex", mb: 2 }}>
+          <TextField fullWidth label={`Option ${i+1}`} value={opt} onChange={e => handleOptionChange(i, e.target.value)} />
+          {options.length > 2 && <Button color="error" onClick={() => removeOption(i)}>Remove</Button>}
+        </Box>
       ))}
-      <Button sx={{ mt: 2 }} onClick={addOption}>Add Option</Button>
-      <Button sx={{ mt: 2, ml: 2 }} variant="contained" onClick={handleSubmit}>
-        Create Poll
-      </Button>
+      <Button onClick={addOption} sx={{ mb: 2 }}>Add Option</Button><br/>
+      <Button variant="contained" onClick={handleSubmit} disabled={loading}>{loading ? "Creating..." : "Create Poll"}</Button>
     </Container>
   );
 };
