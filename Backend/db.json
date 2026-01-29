@@ -1,1 +1,24 @@
-{}
+{
+  "polls": [
+    {
+      "id": "1",
+      "question": "Your first poll?",
+      "isActive": true,
+      "createdAt": "2026-01-29T00:00:00Z"
+    }
+  ],
+  "options": [
+    {
+      "id": "1",
+      "pollId": 1,
+      "text": "Option A",
+      "votes": 6
+    },
+    {
+      "id": "2",
+      "pollId": 1,
+      "text": "Option B",
+      "votes": 1
+    }
+  ]
+}
